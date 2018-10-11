@@ -58,17 +58,20 @@ vector<bool> initialSolution(int nro_var)
 
 vector<bool> perturba(vector<bool> atual) //Não queremos que ele mude a solução atual, mas crie uma nova
 {
-    // int deve_mudar = getRandInt(0, atual.size());
-    // atual[deve_mudar] = not atual[deve_mudar];
+    //Uma variável aleatória é flippada
+    int deve_mudar = getRandInt(0, atual.size());
+    atual[deve_mudar] = not atual[deve_mudar];
 
-    for(int i = 0; i < atual.size(); i++)
-    {
-        double dice_roll = getRandDouble(0.0, 1.0);
-        if(dice_roll < 0.05)
-        {
-            atual[i] = not atual[i];
-        }
-    }
+
+    // Cada variável tem 5% de chance de ser flippada
+    // for(int i = 0; i < atual.size(); i++)
+    // {
+    //     double dice_roll = getRandDouble(0.0, 1.0);
+    //     if(dice_roll < 0.05)
+    //     {
+    //         atual[i] = not atual[i];
+    //     }
+    // }
 
     return atual;
 
@@ -155,7 +158,7 @@ int main(int argc, char const *argv[])
 
 
     int res = annealing(nro_var, clausulas, stod(argv[2]), stod(argv[3]), atoi(argv[4])); //Colocar função resfriamento também
-    cout << "Clausulas Satisfeitas: " << res << endl;
+    cout << res << " de " << nro_claus << " satisfeitas" << endl;
 
     return 0;
 }
