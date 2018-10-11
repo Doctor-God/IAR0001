@@ -59,19 +59,19 @@ vector<bool> initialSolution(int nro_var)
 vector<bool> perturba(vector<bool> atual) //Não queremos que ele mude a solução atual, mas crie uma nova
 {
     //Uma variável aleatória é flippada
-    int deve_mudar = getRandInt(0, atual.size());
-    atual[deve_mudar] = not atual[deve_mudar];
+    // int deve_mudar = getRandInt(0, atual.size());
+    // atual[deve_mudar] = not atual[deve_mudar];
 
 
     // Cada variável tem 5% de chance de ser flippada
-    // for(int i = 0; i < atual.size(); i++)
-    // {
-    //     double dice_roll = getRandDouble(0.0, 1.0);
-    //     if(dice_roll < 0.05)
-    //     {
-    //         atual[i] = not atual[i];
-    //     }
-    // }
+    for(int i = 0; i < atual.size(); i++)
+    {
+        double dice_roll = getRandDouble(0.0, 1.0);
+        if(dice_roll < 0.05)
+        {
+            atual[i] = not atual[i];
+        }
+    }
 
     return atual;
 
@@ -91,6 +91,8 @@ int satisfiedClauses(vector<bool> &solucao, vector<Clausula> claus)
 
 int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf) //Colocar depois também a função resfriamento
 {
+    ofstream dados;
+    dados.open("saida_250var.txt");
     Temperatura temp(temp_inicial, temp_final, func_resf);
     int iteracao_atual = 0;
 
@@ -99,6 +101,8 @@ int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double t
 
     while(temp.getTemp() > 0 and iteracao_atual < 250000)
     {
+        dados << nro_satisfeitas << endl;
+
         vector<bool> novaSolucao = perturba(solucao);
         int nova_nro_satisfeitas = satisfiedClauses(novaSolucao, claus);
 
@@ -116,10 +120,10 @@ int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double t
                 nro_satisfeitas = nova_nro_satisfeitas;
             }
         }
+
         iteracao_atual++;
         temp.resfria(iteracao_atual);
     }
-
     return  satisfiedClauses(solucao, claus);
 
 }
