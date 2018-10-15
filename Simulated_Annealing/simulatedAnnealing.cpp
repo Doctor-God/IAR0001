@@ -89,10 +89,10 @@ int satisfiedClauses(vector<bool> &solucao, vector<Clausula> claus)
     return num;
 }
 
-int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf) //Colocar depois também a função resfriamento
+int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf)
 {
     ofstream dados;
-    dados.open("saida_250var.txt");
+    dados.open("saida_" + to_string(nro_var) + "var.txt");
     Temperatura temp(temp_inicial, temp_final, func_resf);
     int iteracao_atual = 0;
 
