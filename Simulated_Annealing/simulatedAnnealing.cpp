@@ -67,7 +67,7 @@ vector<bool> perturba(vector<bool> atual) //Não queremos que ele mude a soluç�
     for(int i = 0; i < atual.size(); i++)
     {
         double dice_roll = getRandDouble(0.0, 1.0);
-        if(dice_roll < 0.05)
+        if(dice_roll < 0.01)
         {
             atual[i] = not atual[i];
         }
@@ -89,17 +89,17 @@ int satisfiedClauses(vector<bool> &solucao, vector<Clausula> claus)
     return num;
 }
 
-int annealing(int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf)
+int annealing(int exec, int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf)
 {
     ofstream dados;
-    dados.open("saida_" + to_string(nro_var) + "var.txt");
+    dados.open(to_string(nro_var) + "var_" + to_string(exec) + ".txt");
     Temperatura temp(temp_inicial, temp_final, func_resf);
     int iteracao_atual = 0;
 
     vector<bool> solucao = initialSolution(nro_var);
     int nro_satisfeitas = satisfiedClauses(solucao, claus);
 
-    while(temp.getTemp() > 0 and iteracao_atual < 250000)
+    while(temp.getTemp() > temp_final and iteracao_atual < 250000)
     {
         dados << nro_satisfeitas << endl;
 
@@ -138,9 +138,9 @@ int main(int argc, char const *argv[])
     //argv[3] = temperatura final
     //argv[4] = função de resfriamento a utilizar (implementar algumas alternativas)
 
-    if(argc != 5) //Adicionar os outros depois
+    if(argc != 5)
     {
-        cout << "Entrada: ./simulatedAnnealing.cpp arq_entr temp_inicial temp_final func_resfr\n";
+        cout << "Entrada: ./a.out arq_entr temp_inicial temp_final func_resfr\n";
         exit(1);
     }
 
@@ -161,8 +161,11 @@ int main(int argc, char const *argv[])
     }
 
 
-    int res = annealing(nro_var, clausulas, stod(argv[2]), stod(argv[3]), atoi(argv[4])); //Colocar função resfriamento também
-    cout << res << " de " << nro_claus << " satisfeitas" << endl;
+    for(int i = 0; i < 10; i++)
+    {
+        int res = annealing(i, nro_var, clausulas, stod(argv[2]), stod(argv[3]), atoi(argv[4])); //Colocar função resfriamento também
+        cout << "Exec " << i << ": " << res << " de " << nro_claus << " satisfeitas" << endl;
+    }
 
     return 0;
 }
