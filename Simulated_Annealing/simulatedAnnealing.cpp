@@ -45,7 +45,7 @@ int getRandInt(int a, int b)
 }
 
 
-vector<bool> initialSolution(int nro_var)
+vector<bool> randomSolution(int nro_var)
 {
     vector<bool> variaveis(nro_var);
     for(int i = 0; i < nro_var; i++)
@@ -92,11 +92,11 @@ int satisfiedClauses(vector<bool> &solucao, vector<Clausula> claus)
 int annealing(int exec, int nro_var, vector<Clausula> claus, double temp_inicial, double temp_final, int func_resf)
 {
     ofstream dados;
-    dados.open(to_string(nro_var) + "var_" + to_string(exec) + ".txt");
+    dados.open("annealing_" + to_string(nro_var) + "var_" + to_string(exec) + ".txt");
     Temperatura temp(temp_inicial, temp_final, func_resf);
     int iteracao_atual = 0;
 
-    vector<bool> solucao = initialSolution(nro_var);
+    vector<bool> solucao = randomSolution(nro_var);
     int nro_satisfeitas = satisfiedClauses(solucao, claus);
 
     while(temp.getTemp() > temp_final and iteracao_atual < 250000)
@@ -124,9 +124,38 @@ int annealing(int exec, int nro_var, vector<Clausula> claus, double temp_inicial
         iteracao_atual++;
         temp.resfria(iteracao_atual);
     }
+    dados.close();
     return  satisfiedClauses(solucao, claus);
 
 }
+
+int randomSearch(int exec, int nro_var, vector<Clausula> claus)
+{
+    ofstream dados;
+    dados.open("random_" + to_string(nro_var) + "var_" + to_string(exec) + ".txt");
+
+    vector<bool> melhor_solucao = randomSolution(nro_var);
+    int most_solved = satisfiedClauses(melhor_solucao, claus);
+
+    dados << most_solved << endl;
+    for(int i = 0; i < 250000; i++)
+    {
+
+        vector<bool> solucao = randomSolution(nro_var);
+        int nro_satisfeitas = satisfiedClauses(solucao, claus);
+
+        if(nro_satisfeitas > most_solved)
+        {
+            melhor_solucao = solucao;
+            most_solved = nro_satisfeitas;
+        }
+        dados << nro_satisfeitas << endl;
+    }
+    dados.close();
+    return most_solved;
+
+}
+
 
 //Dicas: execuções são independentes das outras
 //            feita a execução, já colocar a rotina para o gráfico de convergência
@@ -163,8 +192,16 @@ int main(int argc, char const *argv[])
 
     for(int i = 0; i < 10; i++)
     {
-        int res = annealing(i, nro_var, clausulas, stod(argv[2]), stod(argv[3]), atoi(argv[4])); //Colocar função resfriamento também
-        cout << "Exec " << i << ": " << res << " de " << nro_claus << " satisfeitas" << endl;
+        int res = annealing(i, nro_var, clausulas, stod(argv[2]), stod(argv[3]), atoi(argv[4]));
+        cout << "Annealing Exec " << i << ": " << res << " de " << nro_claus << " satisfeitas" << endl;
+    }
+
+    cout << endl;
+
+    for(int i = 0; i < 10; i++)
+    {
+        int res = randomSearch(i, nro_var, clausulas);
+        cout << "Random Exec " << i << ": " << res << " de " << nro_claus << " satisfeitas" << endl;
     }
 
     return 0;

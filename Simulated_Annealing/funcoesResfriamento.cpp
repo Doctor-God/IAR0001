@@ -32,6 +32,9 @@ void Temperatura::resfria(int iter)
             case 6:
                 Temperatura::cooling6(iter);
                 break;
+            case 8:
+                Temperatura::cooling8(iter);
+                break;
             case 9:
                 Temperatura::cooling9(iter);
                 break;
@@ -87,9 +90,14 @@ void Temperatura::cooling6(int iter)
     atual = temp;
 }
 
+void Temperatura::cooling8(int iter)
+{
+    double temp = 0.5*(temp_inicial - temp_final)*(1 + cos((iter*M_PI)/max_iter)) + temp_final;
+    atual = temp;
+}
+
 void Temperatura::cooling9(int iter)
 {
     double a = (1/pow(max_iter, 2))*log(temp_inicial/temp_final);
     atual = temp_inicial*exp(-a*pow(iter, 2));
 }
-

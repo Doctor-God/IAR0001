@@ -15,6 +15,7 @@ private:
     void cooling3(int iter);
     void cooling4(int iter);
     void cooling6(int iter);
+    void cooling8(int iter);
     void cooling9(int iter);
 
 public:
